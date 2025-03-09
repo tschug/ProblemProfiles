@@ -1,0 +1,71 @@
+<template>
+    <lightning-spinner
+        lwc:if={isLoading}
+        variant="brand"
+        size="large"
+    ></lightning-spinner>
+    <lightning-card title="Access Setup for Problem Profiles">
+        <p slot="footer">A URL generating tool to address a known issue for certain profiles.<br/>
+            <lightning-icon icon-name="utility:help_doc_ext" size="x-small" class="slds-p-right_x-small"></lightning-icon>
+            <lightning-formatted-url value="https://help.salesforce.com/s/articleView?id=000385230&type=1" tooltip="View issue on Salesforce Help" label="Salesforce Help" target="_blank" ></lightning-formatted-url> 
+        </p>
+        <div class="slds-p-horizontal_small">
+            <div class="slds-box slds-text-heading_small slds-theme_info slds-theme_alert-texture">
+            <p><lightning-icon icon-name="utility:info_alt" variant="inverse"  size="small" class="slds-p-right_small"></lightning-icon>Select <strong>a profile and an object</strong> to enable the buttons which will to open the respective Classic Setup page in a new tab.</p>
+            </div>
+            <lightning-layout
+                horizontal-align="center"
+                vertical-align="end"
+                multiple-rows="true"
+            >
+                <lightning-layout-item size="3" padding="horizontal-small">
+                    <c-lwc-combo-box-search
+                        input-name="profileSelector"
+                        input-label="Profile"
+                        input-placeholder="Select a profile"
+                        input-help="Select the Profile you want to edit."
+                        input-options={profileOptions}
+                        onselected={handleProfileSelection}
+                        lwc:ref="profileSelector"
+                    ></c-lwc-combo-box-search>
+                </lightning-layout-item>
+                <lightning-layout-item size="3" padding="horizontal-small">
+                    <c-lwc-combo-box-search
+                        input-name="objectSelector"
+                        input-label="Object"
+                        input-placeholder="Select an object"
+                        input-help="Select the Object you want to manage."
+                        input-options={objectOptions}
+                        onselected={handleObjectSelection}
+                        lwc:ref="objectSelector"
+                    ></c-lwc-combo-box-search>
+                </lightning-layout-item>
+                <lightning-layout-item size="6" padding="horizontal-small">
+                    <div class="slds-p-bottom_xxx-small">
+                        <lightning-button-group>
+                            <div class="slds-button-group-row">
+                                <template for:each={actionOptions} for:item="option">
+                                    <lightning-button
+                                        class="slds-button-group-item"
+                                        key={option.value}
+                                        label={option.label}
+                                        data-id={option.value}
+                                        icon-name={option.icon}
+                                        disabled={isDisabled}
+                                        onclick={handleActionClick}
+                                    ></lightning-button>
+                                </template>
+                            </div>
+                        </lightning-button-group>
+                    </div>
+                </lightning-layout-item>
+            </lightning-layout>
+            <lightning-button
+                label="Reset Selections"   
+                variant="base"
+                class="slds-m-left_small"
+                onclick={handleReset}
+            ></lightning-button>
+        </div>
+    </lightning-card>
+</template>
