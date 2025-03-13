@@ -3,10 +3,22 @@
     {
       "path": "force-app",
       "default": true
+    },
+    {
+      "versionName": "ver 0.2",
+      "versionNumber": "0.2.0.NEXT",
+      "path": "force-app",
+      "default": false,
+      "package": "Problem Profile Editor",
+      "versionDescription": ""
     }
   ],
   "name": "ProblemProfiles",
-  "namespace": "",
+  "namespace": "fydo",
   "sfdcLoginUrl": "https://login.salesforce.com",
-  "sourceApiVersion": "62.0"
+  "sourceApiVersion": "62.0",
+  "packageAliases": {
+    "Problem Profile Editor": "0Ho3x000000fxWDCAY",
+    "Problem Profile Editor@0.1.0.2": "04t3x000001ZqhZAAS"
+  }
 }
