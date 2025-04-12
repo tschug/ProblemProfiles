@@ -116,9 +116,9 @@ export default class ProfileEditor extends NavigationMixin( LightningElement ) {
     }
  
 
-    @wire(graphql, { query: '$gqlQuery', variables: "$params" })
-    graphqlQueryResult(result) {
-        this.graphqlData = result;
+    @wire(graphql, { query: '$gqlQueryProfiles', variables: "$params" })
+    graphqlQueryResultProfiles(result) {
+        this.gqlProfileData = result;
         let data = result.data;
         let errors = result.errors;
         if (data) {
@@ -130,7 +130,32 @@ export default class ProfileEditor extends NavigationMixin( LightningElement ) {
                     "label": field.Name.value,
                 }
             });
-            this.profileOptions = [...records];
+            this.addOptions(records);
+            this.isLoaded = true;
+        } else if (errors) {
+            console.log('GQL WIRE FAILED');
+            console.log(JSON.stringify(errors));
+        } else {
+            this.profileOptions = [];
+        }
+    }
+
+    @wire(graphql, { query: '$gqlQueryUserProfile', variables: "$params" })
+    graphqlQueryResultUserProfiles(result) {
+        this.gqlUserProfileData = result;
+        let data = result.data;
+        let errors = result.errors;
+        if (data) {
+            let result = data.uiapi.query.User;
+            console.log(JSON.stringify(result));
+            let records = result.edges.map((edge) => {
+                let field = edge.node;
+                return {
+                    "value": field.ProfileId.value,
+                    "label": field.Name.value,
+                }
+            });
+            this.addOptions(records);
             this.isLoaded = true;
         } else if (errors) {
             console.log('GQL WIRE FAILED');
@@ -144,7 +169,7 @@ export default class ProfileEditor extends NavigationMixin( LightningElement ) {
         return {};
     }
 
-    get gqlQuery() {
+    get gqlQueryProfiles() {
 
         return gql`
             query profiles {
@@ -167,6 +192,55 @@ export default class ProfileEditor extends NavigationMixin( LightningElement ) {
                 }
             }
         `;
+    }
+
+    get gqlQueryUserProfile() {
+
+        return gql`
+            query userprofiles {
+                uiapi {
+                    query {
+                        User(
+                            first: 100
+                            where: {
+                                ProfileId: { ne: null }
+                                Profile: {
+                                    Id: { eq: null }
+                                }
+                            }
+                            orderBy: {
+                                Name: { order: ASC }
+                            }
+                        ) {
+                            edges {
+                                node {
+                                    Id
+                                    Name { value }
+                                    ProfileId { value }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        `;
+    }
+
+    addOptions(options){
+        let valueList = [...this.profileOptions, ...options];
+        valueList.sort((a, b) => {
+            const stringA = a.label.toUpperCase(); // ignore upper and lowercase
+            const stringB = b.label.toUpperCase(); // ignore upper and lowercase
+            if (stringA < stringB) {
+              return -1;
+            }
+            if (stringA > stringB) {
+              return 1;
+            }
+            return 0; // names are equal
+        });
+
+        this.profileOptions = [...valueList];
     }
 
 }
