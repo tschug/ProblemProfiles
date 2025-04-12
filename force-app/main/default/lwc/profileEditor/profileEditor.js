@@ -130,7 +130,6 @@ export default class ProfileEditor extends NavigationMixin( LightningElement ) {
                     "label": field.Name.value,
                 }
             });
-            // this.profileOptions = [...this.profileOptions, ...records];
             this.addOptions(records);
             this.isLoaded = true;
         } else if (errors) {
